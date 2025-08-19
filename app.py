@@ -67,11 +67,18 @@ def process_with_ai():
         st.warning("Please load data first.")
         return
     
+    # Add option to force sample data
+    use_sample_ai = st.checkbox("Force use sample AI data (ignore API)", value=False, 
+                                 help="Check this to use pre-defined sample AI categorization instead of calling OpenAI API")
+    
     ai_analyzer = AIAnalyzer()
     
-    if not ai_analyzer.is_configured():
-        st.error("OpenAI API not configured. Please check your .env file.")
-        st.info("Using sample AI data for demonstration.")
+    # Override client if user wants to force sample data
+    if use_sample_ai:
+        ai_analyzer.client = None
+        st.info("Using sample AI data as requested.")
+    elif not ai_analyzer.is_configured():
+        st.warning("OpenAI API not configured or invalid. Using sample AI data.")
         
     st.subheader("🤖 AI Processing")
     

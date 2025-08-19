@@ -23,17 +23,22 @@ class AIAnalyzer:
     def _setup_openai(self):
         api_key = os.getenv('OPENAI_API_KEY')
         if not api_key:
-            st.error("OpenAI API key not found. Please set OPENAI_API_KEY in your .env file.")
+            st.warning("OpenAI API key not found. Will use sample data.")
             return
         
         try:
+            # Test if the API key is valid by trying to create client
             self.client = openai.OpenAI(api_key=api_key)
+            # Don't test the API here - just create the client
         except Exception as e:
-            st.error(f"Error setting up OpenAI client: {str(e)}")
+            st.warning(f"Error setting up OpenAI client: {str(e)}. Will use sample data.")
+            self.client = None
     
     def categorize_feedback(self, feedback_text: str, max_retries: int = 3) -> str:
         if not self.client:
-            return "Error: OpenAI not configured"
+            # Return a default category when API is not configured
+            # This should not be called when using sample data, but just in case
+            return "Improve Platform Usability & Performance"
         
         prompt = f"""
 You are an AI assistant for a financial software company. Your task is to categorize customer feedback into one of three strategic priorities based on the content and business impact.
@@ -82,7 +87,9 @@ Category:"""
     
     def generate_summary(self, feedback_text: str, max_retries: int = 3) -> str:
         if not self.client:
-            return "Error: OpenAI not configured"
+            # Return a default summary when API is not configured
+            # This should not be called when using sample data, but just in case
+            return "Summary not available - API not configured"
         
         prompt = f"""
 You are an AI assistant helping Product Managers quickly understand customer feedback. 
@@ -124,6 +131,8 @@ Executive Summary:"""
                     return "Unable to generate summary"
     
     def process_batch(self, df: pd.DataFrame, show_progress: bool = True) -> pd.DataFrame:
+        st.write(f"DEBUG: process_batch called, self.client is: {self.client}")
+        
         if not self.client:
             st.info("OpenAI API not configured. Using sample AI data for demonstration.")
             
