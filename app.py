@@ -19,6 +19,13 @@ def initialize_session_state():
         st.session_state.processed_data = None
     if 'ai_processed' not in st.session_state:
         st.session_state.ai_processed = False
+    
+    # Add a reset button in sidebar
+    if st.sidebar.button("🔄 Reset All Data", help="Clear all cached data and start fresh"):
+        st.session_state.data = None
+        st.session_state.processed_data = None
+        st.session_state.ai_processed = False
+        st.rerun()
 
 def load_data():
     data_processor = DataProcessor()
