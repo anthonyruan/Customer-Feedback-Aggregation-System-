@@ -179,49 +179,52 @@ Executive Summary:"""
     def _add_sample_ai_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df_copy = df.copy()
         
-        # Ensure all three categories are well-represented in order
-        sample_categories = [
-            "Win Enterprise Deals",
-            "Ensure Regulatory & Data Compliance",
-            "Improve Platform Usability & Performance",
-            "Win Enterprise Deals",
-            "Improve Platform Usability & Performance",
-            "Ensure Regulatory & Data Compliance",
-            "Improve Platform Usability & Performance",
-            "Win Enterprise Deals", 
-            "Ensure Regulatory & Data Compliance",
-            "Improve Platform Usability & Performance"
-        ]
+        # Directly assign categories to ensure all three are present
+        # For 10 rows: 3 Win Enterprise, 3 Compliance, 4 Usability
+        if len(df_copy) == 10:
+            # Explicit assignment for exactly 10 rows
+            df_copy['AI_Category'] = [
+                "Win Enterprise Deals",                      # Row 0
+                "Ensure Regulatory & Data Compliance",       # Row 1  
+                "Improve Platform Usability & Performance",  # Row 2
+                "Win Enterprise Deals",                      # Row 3
+                "Improve Platform Usability & Performance",  # Row 4
+                "Win Enterprise Deals",                      # Row 5
+                "Improve Platform Usability & Performance",  # Row 6
+                "Ensure Regulatory & Data Compliance",       # Row 7
+                "Ensure Regulatory & Data Compliance",       # Row 8
+                "Improve Platform Usability & Performance"   # Row 9
+            ]
+        else:
+            # For other row counts, cycle through categories
+            sample_categories = [
+                "Win Enterprise Deals",
+                "Ensure Regulatory & Data Compliance",
+                "Improve Platform Usability & Performance"
+            ]
+            num_rows = len(df_copy)
+            categories_to_assign = []
+            for i in range(num_rows):
+                categories_to_assign.append(sample_categories[i % 3])
+            df_copy['AI_Category'] = categories_to_assign
         
+        # Sample summaries
         sample_summaries = [
-            "Enterprise dashboard lacks critical SOX compliance security features",
-            "Mobile app crashes frequently when processing large datasets",
-            "API documentation needs improvement for faster integration",
-            "GDPR data export functionality is broken causing violations",
-            "Dashboard loading times are unacceptable for operations",
-            "Missing role-based access controls for enterprise customers",
-            "Performance degrades with 1000+ concurrent users",
-            "Real-time collaboration features needed for distributed teams",
-            "Data encryption at rest doesn't meet security requirements", 
-            "User interface is confusing and requires training"
+            "Missing enterprise-grade security features for SOX compliance",
+            "Mobile app crashes with large dataset processing",
+            "API documentation needs improvement for integration",
+            "GDPR data export broken causing compliance violations",
+            "Dashboard loading times affecting daily operations",
+            "Role-based access controls needed for enterprise",
+            "Performance issues with 1000+ concurrent users",
+            "Real-time collaboration features for distributed teams",
+            "Data encryption doesn't meet security requirements", 
+            "User interface requires extensive training"
         ]
         
         num_rows = len(df_copy)
-        
-        # Debug: Show what we're assigning
-        categories_to_assign = (sample_categories * ((num_rows // len(sample_categories)) + 1))[:num_rows]
         summaries_to_assign = (sample_summaries * ((num_rows // len(sample_summaries)) + 1))[:num_rows]
-        
-        # Log the assignment for debugging
-        st.write(f"DEBUG: Assigning {len(categories_to_assign)} categories to {num_rows} rows")
-        st.write(f"DEBUG: First 3 categories: {categories_to_assign[:3]}")
-        
-        df_copy['AI_Category'] = categories_to_assign
         df_copy['AI_Summary'] = summaries_to_assign
-        
-        # Verify assignment
-        st.write(f"DEBUG: After assignment, unique categories: {df_copy['AI_Category'].unique().tolist()}")
-        st.write(f"DEBUG: Category counts: {df_copy['AI_Category'].value_counts().to_dict()}")
         
         return df_copy
     
