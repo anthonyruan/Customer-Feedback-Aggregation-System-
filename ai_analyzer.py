@@ -40,23 +40,15 @@ class AIAnalyzer:
             # This should not be called when using sample data, but just in case
             return "Improve Platform Usability & Performance"
         
-        prompt = f"""
-You are an AI assistant for a financial software company. Your task is to categorize customer feedback into one of three strategic priorities based on the content and business impact.
+        prompt = f"""Categorize this customer feedback into exactly one of these three categories:
 
-Categories:
-1. "Win Enterprise Deals" - Features, integrations, or capabilities needed to attract and close large enterprise customers
-2. "Ensure Regulatory & Data Compliance" - Security, privacy, regulatory compliance, data governance, and audit requirements  
-3. "Improve Platform Usability & Performance" - User experience, performance optimization, stability, and general usability improvements
-
-Instructions:
-- Read the feedback carefully and identify the primary business concern
-- Choose the category that best aligns with the core issue described
-- Respond with ONLY the category name (exactly as written above)
-- If multiple categories apply, choose the most critical one based on business impact
+1. Win Enterprise Deals
+2. Ensure Regulatory & Data Compliance  
+3. Improve Platform Usability & Performance
 
 Feedback: "{feedback_text}"
 
-Category:"""
+Respond with only the category name, nothing else:"""
 
         for attempt in range(max_retries):
             try:
@@ -72,9 +64,19 @@ Category:"""
                 
                 category = response.choices[0].message.content.strip()
                 
+                # Debug: Log what the API returned
+                st.write(f"DEBUG - API returned category: '{category}'")
+                
                 if category in self.STRATEGIC_CATEGORIES:
                     return category
                 else:
+                    # Try to match partial strings (in case of formatting issues)
+                    for valid_cat in self.STRATEGIC_CATEGORIES:
+                        if valid_cat.lower() in category.lower() or category.lower() in valid_cat.lower():
+                            st.write(f"DEBUG - Partial match found: '{category}' -> '{valid_cat}'")
+                            return valid_cat
+                    
+                    st.warning(f"DEBUG - Unknown category from API: '{category}', using default")
                     return "Improve Platform Usability & Performance"
                     
             except Exception as e:
