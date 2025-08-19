@@ -125,8 +125,23 @@ Executive Summary:"""
     
     def process_batch(self, df: pd.DataFrame, show_progress: bool = True) -> pd.DataFrame:
         if not self.client:
-            st.error("OpenAI client not configured. Using sample data.")
-            return self._add_sample_ai_data(df)
+            st.info("OpenAI API not configured. Using sample AI data for demonstration.")
+            
+            # Show progress bar even for sample data
+            if show_progress:
+                progress_bar = st.progress(0)
+                status_text = st.empty()
+                status_text.text('Generating sample AI categorization...')
+                progress_bar.progress(0.5)
+            
+            result = self._add_sample_ai_data(df)
+            
+            if show_progress:
+                progress_bar.progress(1.0)
+                status_text.text('Sample AI processing complete!')
+                time.sleep(0.5)  # Brief pause to show completion
+            
+            return result
         
         df_copy = df.copy()
         total_rows = len(df_copy)
@@ -164,13 +179,14 @@ Executive Summary:"""
     def _add_sample_ai_data(self, df: pd.DataFrame) -> pd.DataFrame:
         df_copy = df.copy()
         
+        # Ensure all three categories are well-represented in order
         sample_categories = [
-            "Ensure Regulatory & Data Compliance",
-            "Improve Platform Usability & Performance", 
             "Win Enterprise Deals",
             "Ensure Regulatory & Data Compliance",
             "Improve Platform Usability & Performance",
             "Win Enterprise Deals",
+            "Improve Platform Usability & Performance",
+            "Ensure Regulatory & Data Compliance",
             "Improve Platform Usability & Performance",
             "Win Enterprise Deals", 
             "Ensure Regulatory & Data Compliance",
