@@ -82,32 +82,39 @@ def create_filters():
     if st.session_state.processed_data is None:
         return {}
     
+    # IMPORTANT: Use the full unfiltered data for filter options
     df = st.session_state.processed_data
     
     st.sidebar.header("🔍 Filters")
     
+    # Debug: Show what categories are available in the FULL dataset
+    all_categories = df['AI_Category'].unique().tolist() if 'AI_Category' in df.columns else []
+    if all_categories:
+        st.sidebar.info(f"Available categories: {all_categories}")
+    
+    # Get all unique values from the FULL dataset for filter options
     categories = st.sidebar.multiselect(
         "Strategic Priority",
-        options=df['AI_Category'].unique(),
-        default=df['AI_Category'].unique()
+        options=df['AI_Category'].unique() if 'AI_Category' in df.columns else [],
+        default=df['AI_Category'].unique() if 'AI_Category' in df.columns else []
     )
     
     products = st.sidebar.multiselect(
         "Product/Module",
-        options=df['Product'].unique(),
-        default=df['Product'].unique()
+        options=df['Product'].unique() if 'Product' in df.columns else [],
+        default=df['Product'].unique() if 'Product' in df.columns else []
     )
     
     severities = st.sidebar.multiselect(
         "Severity Level", 
-        options=df['Severity'].unique(),
-        default=df['Severity'].unique()
+        options=df['Severity'].unique() if 'Severity' in df.columns else [],
+        default=df['Severity'].unique() if 'Severity' in df.columns else []
     )
     
     regions = st.sidebar.multiselect(
         "Region",
-        options=df['Region'].unique(), 
-        default=df['Region'].unique()
+        options=df['Region'].unique() if 'Region' in df.columns else [], 
+        default=df['Region'].unique() if 'Region' in df.columns else []
     )
     
     return {
@@ -159,6 +166,10 @@ def create_visualizations(df):
     with col1:
         st.subheader("📊 Feedback by Strategic Category")
         category_counts = df['AI_Category'].value_counts()
+        
+        # Debug: Show category counts
+        st.write(f"Category distribution: {category_counts.to_dict()}")
+        
         fig_bar = px.bar(
             x=category_counts.values,
             y=category_counts.index,
