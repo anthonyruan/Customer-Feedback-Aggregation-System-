@@ -212,12 +212,12 @@ Executive Summary:"""
         sample_summaries = [
             "Missing enterprise-grade security features for SOX compliance",
             "Mobile app crashes with large dataset processing",
-            "API documentation needs improvement for integration",
+            "SSO integration needed for Fortune 500 enterprise deployment",
             "GDPR data export broken causing compliance violations",
             "Dashboard loading times affecting daily operations",
-            "Role-based access controls needed for enterprise",
+            "Enterprise multi-tenancy and RBAC features missing",
             "Performance issues with 1000+ concurrent users",
-            "Real-time collaboration features for distributed teams",
+            "White-label customization required for enterprise integration",
             "Data encryption doesn't meet security requirements", 
             "User interface requires extensive training"
         ]

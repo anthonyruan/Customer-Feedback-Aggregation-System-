@@ -106,12 +106,12 @@ class DataProcessor:
             'Feedback': [
                 'The new enterprise dashboard is missing critical security features required for SOX compliance',
                 'Mobile app crashes frequently when processing large datasets, affecting productivity',
-                'Need better API documentation and SDK examples for faster integration',
+                'Need SSO integration with Okta and Active Directory for our Fortune 500 deployment',
                 'GDPR data export functionality is broken and causing compliance violations',
                 'Dashboard loading times are unacceptable for our daily operations',
-                'Missing role-based access controls for enterprise customers',
+                'Missing advanced role-based access controls and multi-tenancy for enterprise customers',
                 'Performance degrades significantly with more than 1000 concurrent users',
-                'Need real-time collaboration features for our distributed teams',
+                'Need white-label customization and API access for our enterprise integration',
                 'Data encryption at rest is not meeting our security requirements',
                 'User interface is confusing and requires extensive training'
             ],
