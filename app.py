@@ -81,6 +81,17 @@ def process_with_ai():
             st.session_state.processed_data = None
             
             processed_df = ai_analyzer.process_batch(st.session_state.data)
+            
+            # Debug: Check what we received
+            st.write("DEBUG after process_batch returned:")
+            st.write(f"  - DataFrame shape: {processed_df.shape}")
+            st.write(f"  - Columns: {processed_df.columns.tolist()}")
+            
+            if 'AI_Category' in processed_df.columns:
+                st.write("  - AI_Category first 10 values:")
+                for i in range(min(10, len(processed_df))):
+                    st.write(f"    Row {i}: {processed_df.iloc[i]['AI_Category']}")
+            
             st.session_state.processed_data = processed_df
             st.session_state.ai_processed = True
             

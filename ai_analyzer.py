@@ -136,6 +136,16 @@ Executive Summary:"""
             
             result = self._add_sample_ai_data(df)
             
+            # Debug: Verify what we're returning
+            st.write("DEBUG in process_batch:")
+            st.write(f"  - Total rows: {len(result)}")
+            st.write(f"  - Columns: {result.columns.tolist()}")
+            if 'AI_Category' in result.columns:
+                st.write(f"  - Unique AI_Category values: {result['AI_Category'].unique().tolist()}")
+                st.write(f"  - AI_Category counts:")
+                for cat, count in result['AI_Category'].value_counts().items():
+                    st.write(f"    - {cat}: {count}")
+            
             if show_progress:
                 progress_bar.progress(1.0)
                 status_text.text('Sample AI processing complete!')
