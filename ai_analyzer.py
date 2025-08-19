@@ -64,19 +64,15 @@ Respond with only the category name, nothing else:"""
                 
                 category = response.choices[0].message.content.strip()
                 
-                # Debug: Log what the API returned
-                st.write(f"DEBUG - API returned category: '{category}'")
-                
                 if category in self.STRATEGIC_CATEGORIES:
                     return category
                 else:
                     # Try to match partial strings (in case of formatting issues)
                     for valid_cat in self.STRATEGIC_CATEGORIES:
                         if valid_cat.lower() in category.lower() or category.lower() in valid_cat.lower():
-                            st.write(f"DEBUG - Partial match found: '{category}' -> '{valid_cat}'")
                             return valid_cat
                     
-                    st.warning(f"DEBUG - Unknown category from API: '{category}', using default")
+                    # If no match found, return default
                     return "Improve Platform Usability & Performance"
                     
             except Exception as e:
@@ -133,8 +129,6 @@ Executive Summary:"""
                     return "Unable to generate summary"
     
     def process_batch(self, df: pd.DataFrame, show_progress: bool = True) -> pd.DataFrame:
-        st.write(f"DEBUG: process_batch called, self.client is: {self.client}")
-        
         if not self.client:
             st.info("OpenAI API not configured. Using sample AI data for demonstration.")
             
@@ -146,16 +140,6 @@ Executive Summary:"""
                 progress_bar.progress(0.5)
             
             result = self._add_sample_ai_data(df)
-            
-            # Debug: Verify what we're returning
-            st.write("DEBUG in process_batch:")
-            st.write(f"  - Total rows: {len(result)}")
-            st.write(f"  - Columns: {result.columns.tolist()}")
-            if 'AI_Category' in result.columns:
-                st.write(f"  - Unique AI_Category values: {result['AI_Category'].unique().tolist()}")
-                st.write(f"  - AI_Category counts:")
-                for cat, count in result['AI_Category'].value_counts().items():
-                    st.write(f"    - {cat}: {count}")
             
             if show_progress:
                 progress_bar.progress(1.0)

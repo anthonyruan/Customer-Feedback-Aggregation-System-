@@ -88,17 +88,6 @@ def process_with_ai():
             st.session_state.processed_data = None
             
             processed_df = ai_analyzer.process_batch(st.session_state.data)
-            
-            # Debug: Check what we received
-            st.write("DEBUG after process_batch returned:")
-            st.write(f"  - DataFrame shape: {processed_df.shape}")
-            st.write(f"  - Columns: {processed_df.columns.tolist()}")
-            
-            if 'AI_Category' in processed_df.columns:
-                st.write("  - AI_Category first 10 values:")
-                for i in range(min(10, len(processed_df))):
-                    st.write(f"    Row {i}: {processed_df.iloc[i]['AI_Category']}")
-            
             st.session_state.processed_data = processed_df
             st.session_state.ai_processed = True
             
@@ -122,10 +111,8 @@ def create_filters():
     
     st.sidebar.header("🔍 Filters")
     
-    # Debug: Show what categories are available in the FULL dataset
+    # Show available categories for user information
     all_categories = df['AI_Category'].unique().tolist() if 'AI_Category' in df.columns else []
-    if all_categories:
-        st.sidebar.info(f"Available categories: {all_categories}")
     
     # Get all unique values from the FULL dataset for filter options
     categories = st.sidebar.multiselect(
@@ -202,8 +189,8 @@ def create_visualizations(df):
         st.subheader("📊 Feedback by Strategic Category")
         category_counts = df['AI_Category'].value_counts()
         
-        # Debug: Show category counts
-        st.write(f"Category distribution: {category_counts.to_dict()}")
+        # Show category distribution for user information
+        st.caption(f"Distribution: {category_counts.to_dict()}")
         
         fig_bar = px.bar(
             x=category_counts.values,
