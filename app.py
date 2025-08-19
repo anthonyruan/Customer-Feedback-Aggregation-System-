@@ -33,7 +33,9 @@ def load_data():
                 df = data_processor.create_sample_data()
                 st.session_state.data = df
                 st.session_state.ai_processed = False
-                st.success("Sample data loaded successfully!")
+                # Clear any existing processed data
+                st.session_state.processed_data = None
+                st.success(f"Sample data loaded successfully! {len(df)} rows with categories: {df['Category'].unique().tolist()}")
     else:
         uploaded_file = st.sidebar.file_uploader(
             "Upload CSV file", 
@@ -68,7 +70,13 @@ def process_with_ai():
             processed_df = ai_analyzer.process_batch(st.session_state.data)
             st.session_state.processed_data = processed_df
             st.session_state.ai_processed = True
-            st.success("AI processing completed!")
+            
+            # Debug info
+            if 'AI_Category' in processed_df.columns:
+                unique_categories = processed_df['AI_Category'].unique()
+                st.success(f"AI processing completed! Found {len(unique_categories)} categories: {', '.join(unique_categories)}")
+            else:
+                st.success("AI processing completed!")
 
 def create_filters():
     if st.session_state.processed_data is None:
