@@ -207,8 +207,21 @@ Executive Summary:"""
         ]
         
         num_rows = len(df_copy)
-        df_copy['AI_Category'] = (sample_categories * ((num_rows // len(sample_categories)) + 1))[:num_rows]
-        df_copy['AI_Summary'] = (sample_summaries * ((num_rows // len(sample_summaries)) + 1))[:num_rows]
+        
+        # Debug: Show what we're assigning
+        categories_to_assign = (sample_categories * ((num_rows // len(sample_categories)) + 1))[:num_rows]
+        summaries_to_assign = (sample_summaries * ((num_rows // len(sample_summaries)) + 1))[:num_rows]
+        
+        # Log the assignment for debugging
+        st.write(f"DEBUG: Assigning {len(categories_to_assign)} categories to {num_rows} rows")
+        st.write(f"DEBUG: First 3 categories: {categories_to_assign[:3]}")
+        
+        df_copy['AI_Category'] = categories_to_assign
+        df_copy['AI_Summary'] = summaries_to_assign
+        
+        # Verify assignment
+        st.write(f"DEBUG: After assignment, unique categories: {df_copy['AI_Category'].unique().tolist()}")
+        st.write(f"DEBUG: Category counts: {df_copy['AI_Category'].value_counts().to_dict()}")
         
         return df_copy
     

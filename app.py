@@ -30,12 +30,15 @@ def load_data():
     if use_sample_data:
         if st.sidebar.button("Load Sample Data"):
             with st.spinner("Loading sample data..."):
+                # Clear ALL session state to ensure fresh start
+                st.session_state.data = None
+                st.session_state.processed_data = None
+                st.session_state.ai_processed = False
+                
                 df = data_processor.create_sample_data()
                 st.session_state.data = df
-                st.session_state.ai_processed = False
-                # Clear any existing processed data
-                st.session_state.processed_data = None
                 st.success(f"Sample data loaded successfully! {len(df)} rows with categories: {df['Category'].unique().tolist()}")
+                st.info("Now click 'Process with AI' to analyze the feedback")
     else:
         uploaded_file = st.sidebar.file_uploader(
             "Upload CSV file", 
@@ -67,6 +70,9 @@ def process_with_ai():
     
     if st.button("Process with AI", type="primary"):
         with st.spinner("Processing feedback with AI..."):
+            # Clear old processed data
+            st.session_state.processed_data = None
+            
             processed_df = ai_analyzer.process_batch(st.session_state.data)
             st.session_state.processed_data = processed_df
             st.session_state.ai_processed = True
@@ -74,7 +80,11 @@ def process_with_ai():
             # Debug info
             if 'AI_Category' in processed_df.columns:
                 unique_categories = processed_df['AI_Category'].unique()
-                st.success(f"AI processing completed! Found {len(unique_categories)} categories: {', '.join(unique_categories)}")
+                category_counts = processed_df['AI_Category'].value_counts()
+                st.success(f"AI processing completed! Found {len(unique_categories)} categories:")
+                for cat in unique_categories:
+                    count = category_counts.get(cat, 0)
+                    st.write(f"- {cat}: {count} items")
             else:
                 st.success("AI processing completed!")
 
